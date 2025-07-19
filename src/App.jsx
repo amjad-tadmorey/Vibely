@@ -5,7 +5,6 @@ import { LoadingProvider } from "./context/LoadingContext"
 
 
 function App() {
-
   return (
     <BrowserRouter>
       <ShopProvider>
