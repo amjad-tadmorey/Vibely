@@ -2,9 +2,6 @@ import { useState } from 'react';
 import { Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
 import { useInsert } from '../hooks/remote/useInsert'
 import { useShop } from '../context/ShopContext';
-import { toast } from 'react-toast';
-import Spinner from '../ui/Spinner';
-import SignupModal from './SignupModal'
 import Input from '../ui/Input';
 import Textarea from '../ui/TextArea';
 import Button from '../ui/Button';
@@ -20,7 +17,7 @@ const socialLinks = [
 export default function Feedback() {
     const { shop_id } = useShop();
     const { mutate: createFeedback } = useInsert('feedbacks', 'feedbacks')
-    const { mutate: createCustomer} = useInsert('customers', 'customers')
+    const { mutate: createCustomer } = useInsert('customers', 'customers')
 
 
     const [showModal, setShowModal] = useState(false)
@@ -43,7 +40,7 @@ export default function Feedback() {
         }
     }
 
-    function handleCreateUser (e) {
+    function handleCreateUser(e) {
         e.preventDefault()
         try {
             createCustomer({ shop_id, customer_name, customer_email, points_balance: 25 })
@@ -58,7 +55,7 @@ export default function Feedback() {
         }
     }
 
-    
+
     if (!shop_id) return null // must view a sopecial ui if the shop_id not found
 
     return (
@@ -71,7 +68,7 @@ export default function Feedback() {
             <h2 className="text-2xl mt-8 mb-6 text-center text-gray-800 font-semibold">
                 We’d love your <span className="text-[#4e6ef2]">feedback</span>!
             </h2>
-            
+
             <div className='w-full max-w-md px-6 pb-8 flex flex-col gap-4'>
 
                 <div className="flex flex-col gap-4">
@@ -105,42 +102,42 @@ export default function Feedback() {
                         rows={5}
                     />
                 </div>
-                
+
                 <Button type="submit" onClick={() => setShowModal(true)}>
                     Submit
                 </Button>
-    
+
             </div>
 
 
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-white/10 backdrop-blur-md">
-                <div className="bg-white rounded-t-lg sm:rounded-lg shadow-lg p-6 max-w-sm w-full transform animate-slideUp">
-                    <h2 className="text-2xl font-bold text-green-600 text-center mb-4">
-                    🎉 Signup Successful!
-                    </h2>
-                    <p className="text-center text-gray-700 mb-6">
-                    You’ve successfully created your account.
-                    </p>
-                    <div className='mb-12'>
-                    <Input
-                        name="email"
-                        placeholder="example@gmail.com"
-                        value={customer_email}
-                        onChange={(e) => setCustomer_email(e.target.value)}
-                        required
-                    />
-                    </div>
+                    <div className="bg-white rounded-t-lg sm:rounded-lg shadow-lg p-6 max-w-sm w-full transform animate-slideUp">
+                        <h2 className="text-2xl font-bold text-green-600 text-center mb-4">
+                            🎉 Signup Successful!
+                        </h2>
+                        <p className="text-center text-gray-700 mb-6">
+                            You’ve successfully created your account.
+                        </p>
+                        <div className='mb-12'>
+                            <Input
+                                name="email"
+                                placeholder="example@gmail.com"
+                                value={customer_email}
+                                onChange={(e) => setCustomer_email(e.target.value)}
+                                required
+                            />
+                        </div>
 
-                    <div className="flex justify-center">
-                    <Button type="submit" onClick={handleCreateUser}>
-                        Submit
-                    </Button>
-                    <Button type="" onClick={handleCreateFeedback}>
-                        Dissmis
-                    </Button>
+                        <div className="flex justify-center">
+                            <Button type="submit" onClick={handleCreateUser}>
+                                Submit
+                            </Button>
+                            <Button type="" onClick={handleCreateFeedback}>
+                                Dissmis
+                            </Button>
+                        </div>
                     </div>
-                </div>
                 </div>
             )}
 
