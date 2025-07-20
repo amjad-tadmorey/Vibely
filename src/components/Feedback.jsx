@@ -5,6 +5,7 @@ import { useShop } from '../context/ShopContext';
 import Input from '../ui/Input';
 import Textarea from '../ui/TextArea';
 import Button from '../ui/Button';
+import Spinner from '../ui/Spinner'
 
 const socialLinks = [
     { icon: <Facebook />, url: "https://facebook.com" },
@@ -16,9 +17,7 @@ const socialLinks = [
 
 export default function Feedback() {
     const { shop_id } = useShop();
-    const { mutate: createFeedback } = useInsert('feedbacks', 'feedbacks')
-    const { mutate: createCustomer } = useInsert('customers', 'customers')
-
+    const { mutate: createFeedback, isPending, isSuccess } = useInsert('feedbacks', 'feedbacks')
 
     const [showModal, setShowModal] = useState(false)
 
@@ -35,23 +34,8 @@ export default function Feedback() {
             setRate(3)
             setCustomer_name('')
             setContent('')
-            setShowModal(false)
+            setShowModal(true)
             // proccecing the checkout
-        }
-    }
-
-    function handleCreateUser(e) {
-        e.preventDefault()
-        try {
-            createCustomer({ shop_id, customer_name, customer_email, points_balance: 25 })
-            createFeedback({ shop_id, content, rate, customer_name, customer_email })
-        } finally {
-            setRate(3)
-            setCustomer_name('')
-            setContent('')
-            setCustomer_email('')
-            setShowModal(false)
-            // proccecing the signup
         }
     }
 
@@ -69,75 +53,74 @@ export default function Feedback() {
                 We’d love your <span className="text-[#4e6ef2]">feedback</span>!
             </h2>
 
-            <div className='w-full max-w-md px-6 pb-8 flex flex-col gap-4'>
+            <div className='w-full px-6 pb-8 flex flex-col justify-center items-center gap-4'>
 
-                <div className="flex flex-col gap-4">
-                    <div className="flex justify-center gap-2 mb-4">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                            <span
-                                key={star}
-                                className={`text-3xl cursor-pointer transition-colors ${rate >= star ? 'text-yellow-400' : 'text-gray-300'
-                                    }`}
-                                onClick={() => setRate(star)}
-                            >
-                                ★
-                            </span>
-                        ))}
+                {
+                    isPending ? <Spinner /> : <div className="flex flex-col gap-4 w-full">
+                        <div className="flex justify-center gap-2 mb-4">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                                <span
+                                    key={star}
+                                    className={`text-3xl cursor-pointer transition-colors ${rate >= star ? 'text-yellow-400' : 'text-gray-300'
+                                        }`}
+                                    onClick={() => setRate(star)}
+                                >
+                                    ★
+                                </span>
+                            ))}
+                        </div>
+
+                        <Input
+                            name="name"
+                            placeholder="What should we call you? : )"
+                            value={customer_name}
+                            onChange={(e) => setCustomer_name(e.target.value)}
+                            required
+                        />
+
+                        <Textarea
+                            name="feedback"
+                            placeholder="We’re all ears! Tell us what you think..."
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            required
+                            rows={5}
+                        />
                     </div>
+                }
 
-                    <Input
-                        name="name"
-                        placeholder="What should we call you? : )"
-                        value={customer_name}
-                        onChange={(e) => setCustomer_name(e.target.value)}
-                        required
-                    />
-
-                    <Textarea
-                        name="feedback"
-                        placeholder="We’re all ears! Tell us what you think..."
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        required
-                        rows={5}
-                    />
-                </div>
-
-                <Button type="submit" onClick={() => setShowModal(true)}>
+                <Button type="submit" onClick={handleCreateFeedback}>
                     Submit
                 </Button>
 
             </div>
 
 
-            {showModal && (
+            {showModal && isSuccess && (
                 <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-white/10 backdrop-blur-md">
-                    <div className="bg-white rounded-t-lg sm:rounded-lg shadow-lg p-6 max-w-sm w-full transform animate-slideUp">
-                        <h2 className="text-2xl font-bold text-green-600 text-center mb-4">
-                            🎉 Signup Successful!
+                    <div className="bg-white rounded-t-lg sm:rounded-lg shadow-lg p-6 max-w-sm w-full transform animate-slideUp mx-1">
+                        <h2 className="text-2xl font-bold text-[#4e6ef2] text-center mb-4">
+                            Thank you
                         </h2>
                         <p className="text-center text-gray-700 mb-6">
-                            You’ve successfully created your account.
+                            Thanks for your feedback! Could you share it on Google Reviews ?
                         </p>
-                        <div className='mb-12'>
-                            <Input
-                                name="email"
-                                placeholder="example@gmail.com"
-                                value={customer_email}
-                                onChange={(e) => setCustomer_email(e.target.value)}
-                                required
-                            />
-                        </div>
-
-                        <div className="flex justify-center">
-                            <Button type="submit" onClick={handleCreateUser}>
-                                Submit
-                            </Button>
-                            <Button type="" onClick={handleCreateFeedback}>
-                                Dissmis
-                            </Button>
+                        <img className='shadow-md rounded-lg' src="/google-review.png" alt="" />
+                        <div className="flex flex-row justify-center gap-3 mt-12">
+                            {socialLinks.map(({ icon, url }, idx) => (
+                                <a
+                                    key={idx}
+                                    href={url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="shadow-md p-2 rounded-full transition duration-200 text-[#6a85f3]"
+                                >
+                                    {icon}
+                                </a>
+                            ))}
                         </div>
                     </div>
+
                 </div>
             )}
 
