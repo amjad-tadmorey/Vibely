@@ -37,7 +37,7 @@ export default function Feedback() {
 
     if (!shop_id || isLoadingShop) return null // must view a special ui if the shop_id not found
 
-    const { color, font, social, logo } = shop
+    const { color, font, social, logo, shop_name } = shop
     applyFont(font)
     const gradientClass = getGradientFromColor(color);
 
@@ -59,7 +59,7 @@ export default function Feedback() {
 
             <header className="w-full px-6 pb-4 pt-8 flex justify-center items-center">
                 <img src={logo} alt="" className='tracking-wide w-12' />
-                <div className={`text-2xl font-bold `} style={{ color }}>Vibely</div>
+                <div className={`text-2xl font-bold `} style={{ color }}>{shop_name}</div>
             </header>
 
             <h2 className="text-2xl mt-8 mb-6 text-center text-gray-800 font-semibold">
