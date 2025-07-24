@@ -1,0 +1,18 @@
+const socialPlatforms = [
+    "facebook",
+    "instagram",
+    "twitter",
+    "linkedin",
+    "youtube",
+    "tiktok",
+    "whatsapp",
+    "telegram",
+    "snapchat",
+    "pinterest",
+    "threads",
+    "behance",
+    "dribbble",
+    "email",
+    "phone",
+    "website",
+];

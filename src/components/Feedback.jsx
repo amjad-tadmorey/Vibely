@@ -6,6 +6,13 @@ import Input from '../ui/Input';
 import Textarea from '../ui/TextArea';
 import Button from '../ui/Button';
 import Spinner from '../ui/Spinner'
+import toast from 'react-hot-toast';
+import { getGradientFromColor } from '../lib/getGradientFromColor';
+import { useGetOne } from '../hooks/remote/useGetOne';
+import { useSearchParams } from 'react-router-dom';
+import { applyFont } from '../lib/applyFont'
+import SocialIcons from './socialIcons';
+
 
 const socialLinks = [
     { icon: <Facebook />, url: "https://facebook.com" },
@@ -16,41 +23,47 @@ const socialLinks = [
 ];
 
 export default function Feedback() {
-    const { shop_id } = useShop();
-    const { mutate: createFeedback, isPending, isSuccess } = useInsert('feedbacks', 'feedbacks')
+    const [searchParams] = useSearchParams();
+    const shop_id = searchParams.get("shop_id");
 
     const [showModal, setShowModal] = useState(false)
-
     const [rate, setRate] = useState(3);
     const [customer_name, setCustomer_name] = useState('')
     const [customer_email, setCustomer_email] = useState()
     const [content, setContent] = useState('')
 
+    const { mutate: createFeedback, isPending, isSuccess } = useInsert('feedbacks', 'feedbacks')
+    const { data: shop, isPending: isLoadingShop } = useGetOne('shops', 'shops')
+
+    if (!shop_id || isLoadingShop) return null // must view a special ui if the shop_id not found
+
+    const { color, font, social, logo } = shop
+    applyFont(font)
+    const gradientClass = getGradientFromColor(color);
+
     function handleCreateFeedback(e) {
         e.preventDefault()
+        if (!content) return toast.error("We did'nt recognize any content 🤔")
         try {
-            createFeedback({ shop_id, content, rate, customer_name, customer_email: null })
+            createFeedback({ shop_id, content, rate, customer_name: customer_name || 'anonymous', customer_email: null })
         } finally {
             setRate(3)
             setCustomer_name('')
             setContent('')
             setShowModal(true)
-            // proccecing the checkout
         }
     }
 
-
-    if (!shop_id) return null // must view a sopecial ui if the shop_id not found
-
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#f0f4ff] to-white flex flex-col items-center overflow-hidden">
+        <div className={`min-h-screen max-w-md flex flex-col items-center overflow-hidden p-2`} style={gradientClass}>
 
-            <header className="w-full px-6 pb-8 pt-12 flex justify-center items-center">
-                <div className="text-2xl font-bold text-[#4e6ef2] tracking-wide">Vibely</div>
+            <header className="w-full px-6 pb-4 pt-8 flex justify-center items-center">
+                <img src={logo} alt="" className='tracking-wide w-12' />
+                <div className={`text-2xl font-bold `} style={{ color }}>Vibely</div>
             </header>
 
             <h2 className="text-2xl mt-8 mb-6 text-center text-gray-800 font-semibold">
-                We’d love your <span className="text-[#4e6ef2]">feedback</span>!
+                We’d love your <span style={{ color }}>feedback</span>!
             </h2>
 
             <div className='w-full px-6 pb-8 flex flex-col justify-center items-center gap-4'>
@@ -89,54 +102,31 @@ export default function Feedback() {
                     </div>
                 }
 
-                <Button type="submit" onClick={handleCreateFeedback}>
+
+
+                <Button color={color} type="submit" onClick={handleCreateFeedback}>
                     Submit
                 </Button>
-
             </div>
 
 
             {showModal && isSuccess && (
                 <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-white/10 backdrop-blur-md">
                     <div className="bg-white rounded-t-lg sm:rounded-lg shadow-lg p-6 max-w-sm w-full transform animate-slideUp mx-1">
-                        <h2 className="text-2xl font-bold text-[#4e6ef2] text-center mb-4">
+                        <h2 className={`text-2xl font-bold text-center mb-4`} style={{ color }}>
                             Thank you
                         </h2>
                         <p className="text-center text-gray-700 mb-6">
                             Thanks for your feedback! Could you share it on Google Reviews ?
                         </p>
                         <img className='shadow-md rounded-lg' src="/google-review.png" alt="" />
-                        <div className="flex flex-row justify-center gap-3 mt-12">
-                            {socialLinks.map(({ icon, url }, idx) => (
-                                <a
-                                    key={idx}
-                                    href={url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="shadow-md p-2 rounded-full transition duration-200 text-[#6a85f3]"
-                                >
-                                    {icon}
-                                </a>
-                            ))}
-                        </div>
+                        <SocialIcons social={social} color={color} />
                     </div>
 
                 </div>
             )}
 
-            <div className="flex flex-row justify-center gap-3">
-                {socialLinks.map(({ icon, url }, idx) => (
-                    <a
-                        key={idx}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="shadow-md p-2 rounded-full transition duration-200 text-[#4e6ef2]"
-                    >
-                        {icon}
-                    </a>
-                ))}
-            </div>
+            <SocialIcons social={social} color={color} />
 
         </div>
     );
