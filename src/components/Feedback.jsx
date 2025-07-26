@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
 import { useInsert } from '../hooks/remote/useInsert'
-import { useShop } from '../context/ShopContext';
 import Input from '../ui/Input';
 import Textarea from '../ui/TextArea';
 import Button from '../ui/Button';
@@ -12,15 +11,6 @@ import { useGetOne } from '../hooks/remote/useGetOne';
 import { useSearchParams } from 'react-router-dom';
 import { applyFont } from '../lib/applyFont'
 import SocialIcons from './socialIcons';
-
-
-const socialLinks = [
-    { icon: <Facebook />, url: "https://facebook.com" },
-    { icon: <Twitter />, url: "https://twitter.com" },
-    { icon: <Instagram />, url: "https://instagram.com" },
-    { icon: <Linkedin />, url: "https://linkedin.com" },
-    { icon: <Youtube />, url: "https://youtube.com" },
-];
 
 export default function Feedback() {
     const [searchParams] = useSearchParams();
@@ -37,7 +27,7 @@ export default function Feedback() {
 
     if (!shop_id || isLoadingShop) return null // must view a special ui if the shop_id not found
 
-    const { color, font, social, logo, shop_name } = shop
+    const { color, font, social, logo, shop_name, language, welcome_title } = shop
     applyFont(font)
     const gradientClass = getGradientFromColor(color);
 
@@ -54,8 +44,10 @@ export default function Feedback() {
         }
     }
 
+    if (isPending) return <Spinner />
+
     return (
-        <div className={`min-h-screen max-w-md flex flex-col items-center overflow-hidden p-2`} style={gradientClass}>
+        <div dir={language === "AR" ? "rtl" : "ltr"} className={`min-h-screen max-w-md flex flex-col items-center overflow-hidden p-2`} style={gradientClass}>
 
             <header className="w-full px-6 pb-4 pt-8 flex justify-center items-center">
                 <img src={logo} alt="" className='tracking-wide w-12' />
@@ -63,7 +55,7 @@ export default function Feedback() {
             </header>
 
             <h2 className="text-2xl mt-8 mb-6 text-center text-gray-800 font-semibold">
-                We’d love your <span style={{ color }}>feedback</span>!
+                {welcome_title}
             </h2>
 
             <div className='w-full px-6 pb-8 flex flex-col justify-center items-center gap-4'>
@@ -85,7 +77,7 @@ export default function Feedback() {
 
                         <Input
                             name="name"
-                            placeholder="What should we call you? : )"
+                            placeholder={language === 'AR' ? "اسمك؟ 😊" : "What should we call you? 😊"}
                             value={customer_name}
                             onChange={(e) => setCustomer_name(e.target.value)}
                             required
@@ -93,7 +85,7 @@ export default function Feedback() {
 
                         <Textarea
                             name="feedback"
-                            placeholder="We’re all ears! Tell us what you think..."
+                            placeholder={language === 'AR' ? "نحن بانتظار رأيك! شاركنا ما تفكّر فيه 😊" : "We’re all ears! Tell us what you think..."}
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                             required
@@ -105,7 +97,7 @@ export default function Feedback() {
 
 
                 <Button color={color} type="submit" onClick={handleCreateFeedback}>
-                    Submit
+                    {language === "AR" ? "تأكيد" : "Submit"}
                 </Button>
             </div>
 
