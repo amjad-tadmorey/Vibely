@@ -7,7 +7,7 @@ import Button from '../ui/Button';
 import Spinner from '../ui/Spinner'
 import toast from 'react-hot-toast';
 import { getGradientFromColor } from '../lib/getGradientFromColor';
-import { useGetOne } from '../hooks/remote/useGetOne';
+import { useGet } from '../hooks/remote/useGet';
 import { useSearchParams } from 'react-router-dom';
 import { applyFont } from '../lib/applyFont'
 import SocialIcons from './socialIcons';
@@ -23,11 +23,15 @@ export default function Feedback() {
     const [content, setContent] = useState('')
 
     const { mutate: createFeedback, isPending, isSuccess } = useInsert('feedbacks', 'feedbacks')
-    const { data: shop, isPending: isLoadingShop } = useGetOne('shops', 'shops')
+
+    const { data: shop, isPending: isLoadingShop } = useGet('shops', {
+        filters: [{ column: 'id', operator: 'eq', value: shop_id }],
+    })
 
     if (!shop_id || isLoadingShop) return null // must view a special ui if the shop_id not found
+    if (isPending) return <Spinner />
 
-    const { color, font, social, logo, shop_name, language, welcome_title } = shop
+    const { color, font, social, logo, shop_name, language, welcome_title } = shop[0]
     applyFont(font)
     const gradientClass = getGradientFromColor(color);
 
@@ -44,7 +48,7 @@ export default function Feedback() {
         }
     }
 
-    if (isPending) return <Spinner />
+
 
     return (
         <div dir={language === "AR" ? "rtl" : "ltr"} className={`min-h-screen max-w-md flex flex-col items-center overflow-hidden p-2`} style={gradientClass}>
