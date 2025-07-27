@@ -2,6 +2,7 @@ import { BrowserRouter } from "react-router-dom"
 import Feedback from "./components/Feedback"
 import { ShopProvider } from "./context/ShopContext"
 import { Toaster } from "react-hot-toast"
+import ErrorBoundary from "./components/ErrorBoundary"
 
 
 function App() {
@@ -9,9 +10,11 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <ShopProvider>
-          <Feedback />
-        </ShopProvider>
+        <ErrorBoundary>
+          <ShopProvider>
+            <Feedback />
+          </ShopProvider>
+        </ErrorBoundary>
       </BrowserRouter>
 
       <Toaster

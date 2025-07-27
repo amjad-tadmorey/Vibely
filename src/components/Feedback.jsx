@@ -48,6 +48,8 @@ export default function Feedback() {
         }
     }
 
+    // const YOUR_PLACE_ID = 'ChIJ3S-JXmauEmsRUcIaWtf4MzE'
+    const YOUR_PLACE_ID = null
 
 
     return (
@@ -106,7 +108,7 @@ export default function Feedback() {
             </div>
 
 
-            {showModal && isSuccess && (
+            {showModal && isSuccess && YOUR_PLACE_ID && (
                 <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-white/10 backdrop-blur-md">
                     <div className="bg-white rounded-t-lg sm:rounded-lg shadow-lg p-6 max-w-sm w-full transform animate-slideUp mx-1">
                         <h2 className={`text-2xl font-bold text-center mb-4`} style={{ color }}>
@@ -115,7 +117,33 @@ export default function Feedback() {
                         <p className="text-center text-gray-700 mb-6">
                             Thanks for your feedback! Could you share it on Google Reviews ?
                         </p>
-                        <img className='shadow-md rounded-lg' src="/google-review.png" alt="" />
+                          <a
+                            href={`https://search.google.com/local/writereview?placeid=${YOUR_PLACE_ID}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <img
+                            className="shadow-md rounded-lg hover:opacity-90 transition"
+                            src="/google-review.png"
+                            alt="Leave a Google Review"
+                            />
+                        </a>
+                        <SocialIcons social={social} color={color} />
+                    </div>
+
+                </div>
+            )}
+
+            {showModal && isSuccess && !YOUR_PLACE_ID && (
+                <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-white/10 backdrop-blur-md">
+                    <div className="bg-white rounded-t-lg sm:rounded-lg shadow-lg p-6 max-w-sm w-full transform animate-slideUp mx-1 mb-32">
+                        <h2 className={`text-2xl font-bold text-center mb-4`} style={{ color }}>
+                            Thank you
+                        </h2>
+                        <p className="text-center text-gray-700 mb-6">
+                            Follow us on social media for updates and deals!
+                        </p>
+                        
                         <SocialIcons social={social} color={color} />
                     </div>
 
