@@ -117,15 +117,15 @@ export default function Feedback() {
                         <p className="text-center text-gray-700 mb-6">
                             Thanks for your feedback! Could you share it on Google Reviews ?
                         </p>
-                          <a
+                        <a
                             href={`https://search.google.com/local/writereview?placeid=${YOUR_PLACE_ID}`}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
                             <img
-                            className="shadow-md rounded-lg hover:opacity-90 transition"
-                            src="/google-review.png"
-                            alt="Leave a Google Review"
+                                className="shadow-md rounded-lg hover:opacity-90 transition"
+                                src="/google-review.png"
+                                alt="Leave a Google Review"
                             />
                         </a>
                         <SocialIcons social={social} color={color} />
@@ -143,7 +143,7 @@ export default function Feedback() {
                         <p className="text-center text-gray-700 mb-6">
                             Follow us on social media for updates and deals!
                         </p>
-                        
+
                         <SocialIcons social={social} color={color} />
                     </div>
 
