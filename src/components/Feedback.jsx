@@ -31,7 +31,7 @@ export default function Feedback() {
     if (!shop_id || isLoadingShop) return null // must view a special ui if the shop_id not found
     if (isPending) return <Spinner />
 
-    const { color, font, social, logo, shop_name, language, welcome_title } = shop[0]
+    const { color, font, social, logo, shop_name, language, welcome_title, google_id } = shop[0]
     applyFont(font)
     const gradientClass = getGradientFromColor(color);
 
@@ -47,9 +47,6 @@ export default function Feedback() {
             setShowModal(true)
         }
     }
-
-    const YOUR_PLACE_ID = 'ChIJ3S-JXmauEmsRUcIaWtf4MzE'
-    // const YOUR_PLACE_ID = null
 
 
     return (
@@ -108,7 +105,7 @@ export default function Feedback() {
             </div>
 
 
-            {showModal && isSuccess && YOUR_PLACE_ID && (
+            {showModal && isSuccess && google_id && (
                 <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-white/10 backdrop-blur-md">
                     <div className="bg-white rounded-t-lg sm:rounded-lg shadow-lg p-6 max-w-sm w-full transform animate-slideUp mx-1">
                         <h2 className={`text-2xl font-bold text-center mb-4`} style={{ color }}>
@@ -118,7 +115,7 @@ export default function Feedback() {
                             Thanks for your feedback! Could you share it on Google Reviews ?
                         </p>
                         <a
-                            href={`https://search.google.com/local/writereview?placeid=${YOUR_PLACE_ID}`}
+                            href={`https://search.google.com/local/writereview?placeid=${google_id}`}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
@@ -134,7 +131,7 @@ export default function Feedback() {
                 </div>
             )}
 
-            {showModal && isSuccess && !YOUR_PLACE_ID && (
+            {showModal && isSuccess && !google_id && (
                 <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-white/10 backdrop-blur-md">
                     <div className="bg-white rounded-t-lg sm:rounded-lg shadow-lg p-6 max-w-sm w-full transform animate-slideUp mx-1 mb-32">
                         <h2 className={`text-2xl font-bold text-center mb-4`} style={{ color }}>
